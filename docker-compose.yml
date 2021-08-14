@@ -1,0 +1,37 @@
+version: '3.3'
+services:
+  mysql:
+    image: mysql:5.6
+    container_name: mysql_alldone
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - my-db:/var/lib/mysql
+    ports:
+      - 3306:3306
+
+  server:
+    build:
+      context: .
+      dockerfile: ./server/Dockerfile.server
+    container_name: node_alldone
+    volumes:
+    - ./:/usr/src/server
+    command: sh -c "cd server && npm start"
+    ports:
+      - 3000:3000
+
+  client:
+    build:
+      context: .
+      dockerfile: ./client/Dockerfile.client
+    tty: true
+    container_name: react_alldone
+    volumes:
+    - ./:/usr/src/client
+    command: sh -c "cd client && yarn start"
+    ports:
+      - 8080:8080
+
+volumes:
+  my-db:
